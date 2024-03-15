@@ -1,55 +1,62 @@
-import React from "react";
 import { motion } from "framer-motion";
+import { State } from "../hooks/useEngine";
 import { formatPercentage } from "../utils/helpers";
 
 const Results = ({
+  state,
   errors,
   accuracyPercentage,
   total,
-  className,
+  className = "",
 }: {
+  state: State;
   errors: number;
   accuracyPercentage: number;
   total: number;
   className?: string;
 }) => {
+  if (state !== "finish") {
+    return null;
+  }
+
   const initial = { opacity: 0 };
   const animate = { opacity: 1 };
-  const duration = { duration: 0.3 };
 
   return (
     <motion.ul
-      className={
-        "flex flex-col items-center text-primary-400 space-y-3 text-xl ${className}"
-      }
+      initial={initial}
+      animate={animate}
+      className={`flex flex-col items-center text-primary-400 space-y-3 ${className}`}
     >
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ ...duration, delay: 0.5 }}
-        className="text-3xl font-semibold mb-5 mt-5"
+        transition={{ duration: 0.3 }}
+        className="text-2xl font-semibold"
       >
-        Results:
+        Results
       </motion.li>
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ ...duration, delay: 1.5 }}
+        transition={{ duration: 0.3, delay: 0.5 }}
+        className="text-xl"
       >
-        Accuracy:{formatPercentage(accuracyPercentage)}
+        Accuracy: {formatPercentage(accuracyPercentage)}
       </motion.li>
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ ...duration, delay: 2 }}
-        className="text-red-500"
+        transition={{ duration: 0.3, delay: 1 }}
+        className="text-xl text-red-500"
       >
         Errors: {errors}
       </motion.li>
       <motion.li
         initial={initial}
         animate={animate}
-        transition={{ ...duration, delay: 2.5 }}
+        transition={{ duration: 0.3, delay: 1.4 }}
+        className="text-xl"
       >
         Typed: {total}
       </motion.li>

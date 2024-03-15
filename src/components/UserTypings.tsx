@@ -1,29 +1,52 @@
- import React from 'react'
- import Caret from './caret';
- const UserTypings = ({
-    userInput,
-    className,
- } : {
-userInput: string;
-className?: string;
- }) => {
-    const typedCharacters = userInput.split("");
-    return (
-        <div className = {className}>
-        {typedCharacters.map((char,index) => {
-            return <span className = 'text-primary-400' key = {`${char}_${index}`}>{char}</span>;
+import cn from "classnames";
+import Caret from "./caret";
 
-        })}
-        <Caret />
-        </div>
-    );
- };
+const UserTypings = ({
+  userInput,
+  words,
+  className = "",
+}: {
+  userInput: string;
+  words: string;
+  className?: string;
+}) => {
+  const typedCharacters = userInput.split("");
 
- const Character = ({char} : {char: string}) => {
+  return (
+    <div className={className}>
+      {typedCharacters.map((char, index) => (
+        <Character
+          key={`${char}_${index}`}
+          actual={char}
+          expected={words[index]}
+        />
+      ))}
+      <Caret />
+    </div>
+  );
+};
 
-    return <span >{char}</span>
+const Character = ({
+  actual,
+  expected,
+}: {
+  actual: string;
+  expected: string;
+}) => {
+  const isCorrect = actual === expected;
+  const isWhiteSpace = expected === " ";
 
- }
- 
- export default UserTypings;
- 
+  return (
+    <span
+      className={cn({
+        "text-red-500": !isCorrect && !isWhiteSpace,
+        "text-primary-400": isCorrect && !isWhiteSpace,
+        "bg-red-500/50": !isCorrect && isWhiteSpace,
+      })}
+    >
+      {expected}
+    </span>
+  );
+};
+
+export default UserTypings;

@@ -1,35 +1,37 @@
-import {useCallback, useRef, useState, useEffect} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-const useCountdownTimer = (seconds: number) => {
-    const [timeLeft, setTimeLeft] = useState(seconds);
-    const intervalRef = useRef<NodeJS.Timer | null>(null);
+const useCountdown = (seconds: number) => {
+  const [timeLeft, setTimeLeft] = useState(seconds);
+  const intervalRef = useRef<NodeJS.Timer | null>(null);
+  const hasTimerEnded = timeLeft <= 0;
+  const isRunning = intervalRef.current != null;
 
-    const startCountdown = useCallback (() =>{
-        console.log('starting countdown...');
+  const startCountdown = useCallback(() => {
+    if (!hasTimerEnded && !isRunning) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
+      }, 1000);
+    }
+  }, [setTimeLeft, hasTimerEnded, isRunning]);
 
-        intervalRef.current = setInterval (() => {
-          setTimeLeft ((timeLeft) => timeLeft -1);
-        }, 1000);
-    }, [setTimeLeft]);
+  const resetCountdown = useCallback(() => {
+    clearInterval(intervalRef.current!);
+    intervalRef.current = null;
+    setTimeLeft(seconds);
+  }, [seconds]);
 
-    const resetCountdown = useCallback (()=>{
-        console.log ('resetting countdown...');
-        
-        if (intervalRef.current){
-            clearInterval(intervalRef.current);
-        }
-        setTimeLeft(seconds);
-    }, [seconds]);
+  useEffect(() => {
+    if (hasTimerEnded) {
+      clearInterval(intervalRef.current!);
+      intervalRef.current = null;
+    }
+  }, [hasTimerEnded]);
 
-    useEffect(()=>{
-        if(!timeLeft && intervalRef.current){
-            console.log('clearing timer...');
-            clearInterval(intervalRef.current)
-        }
-    }, [timeLeft,intervalRef.current]);
+  useEffect(() => {
+    return () => clearInterval(intervalRef.current!);
+  }, []);
 
-    return { timeLeft, startCountdown , resetCountdown};
+  return { timeLeft, startCountdown, resetCountdown };
+};
 
-}
-
-export default useCountdownTimer;
+export default useCountdown;
