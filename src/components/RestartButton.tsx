@@ -1,3 +1,4 @@
+import React from "react";
 import { useRef } from "react";
 import { MdRefresh } from "react-icons/md";
 
@@ -9,7 +10,7 @@ const RestartButton = ({
   className?: string;
 }) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
-
+ 
   const handleClick = () => {
     buttonRef.current?.blur();
     handleRestart();
@@ -19,10 +20,10 @@ const RestartButton = ({
     <button
       tabIndex={-1} 
       ref={buttonRef}
-      className={`block rounded px-8 py-2 hover:bg-slate-700/50  ${className}`}
+      className={`block rounded px-8 py-2 hover:bg-slate-700/50 ${className}`}
       onClick={handleClick}
     >
-      <MdRefresh className="w-6 h-6" />
+      <MdRefresh className="w-10 h-10" />
     </button>
   );
 };
